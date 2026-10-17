@@ -5,7 +5,8 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "npm --prefix ../packages/shared run build && tsc",
+    "build": "npm --prefix ../packages/shared run build && tsup",
+    "build:tsc": "npm --prefix ../packages/shared run build && tsc",
     "start": "node dist/server.js",
     "test": "vitest run",
     "lint": "eslint src/**/*.ts",
@@ -38,8 +39,10 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.16",
     "@types/supertest": "^6.0.2",
+    "esbuild": "^0.20.0",
     "mongodb-memory-server": "^11.3.0",
     "supertest": "^6.3.4",
+    "tsup": "^9.0.0",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "vitest": "^1.2.2"

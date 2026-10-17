@@ -4,17 +4,17 @@ dotenv.config();
 import { createApp } from './app.js';
 import { connectDB } from './config/db.js';
 import { bootstrapAdmin } from './utils/bootstrap.js';
-import serverless from 'serverless-http';
+import serverlessHttp from 'serverless-http';
 
 const PORT = process.env.PORT || 5000;
 
-let cachedHandler: any;
+let cachedHandler: ReturnType<typeof serverlessHttp> | null = null;
 
 async function initServer() {
   await connectDB();
   await bootstrapAdmin();
   const app = createApp();
-  return serverless(app);
+  return serverlessHttp(app);
 }
 
 // If running locally, start HTTP listener
@@ -28,10 +28,11 @@ if (!process.env.VERCEL) {
     })
     .catch((err) => {
       console.error('Failed to start server:', err);
+      process.exit(1);
     });
 }
 
-// Export default handler for Vercel Serverless
+// Export default handler for Vercel Serverless Functions
 export default async function handler(req: any, res: any) {
   if (!cachedHandler) {
     cachedHandler = await initServer();

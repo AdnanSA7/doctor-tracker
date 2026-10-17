@@ -1,18 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "installCommand": "npm install",
   "buildCommand": "npm run build",
   "builds": [
     {
       "src": "backend/dist/server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": [
-          "backend/dist/**",
-          "packages/shared/dist/**",
-          "node_modules/@doctor-tracker/shared/**"
-        ]
+        "includeFiles": ["backend/dist/**"]
       }
     },
     {
