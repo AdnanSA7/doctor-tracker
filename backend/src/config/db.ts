@@ -19,9 +19,10 @@ export async function connectDB(uri?: string): Promise<void> {
   const mongoUri = ensureMongoUri(rawUri);
   try {
     await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 10000, // Increased for Vercel serverless cold starts
+      bufferCommands: false,           // Don't buffer commands in serverless
     });
-    console.log(`MongoDB connected successfully to ${mongoUri}`);
+    console.log(`MongoDB connected successfully to ${mongoUri.replace(/:([^@]+)@/, ':***@')}`);
   } catch (error) {
     console.error('MongoDB connection error:', error);
     if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
