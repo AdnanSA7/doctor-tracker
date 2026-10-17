@@ -1,35 +1,38 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "buildCommand": "npm run build",
-  "builds": [
+  "services": {
+    "backend": {
+      "root": "backend",
+      "framework": "express",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist"
+    },
+    "frontend": {
+      "root": "frontend",
+      "framework": "nextjs",
+      "outputDirectory": ".next",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "backend",
+          "format": "url",
+          "env": "BACKEND_URL"
+        }
+      ]
+    }
+  },
+  "rewrites": [
     {
-      "src": "backend/dist/server.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["backend/dist/**"]
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "backend"
       }
     },
     {
-      "src": "frontend/package.json",
-      "use": "@vercel/next"
+      "source": "/(.*)",
+      "destination": {
+        "service": "frontend"
+      }
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "backend/dist/server.js"
-    },
-    {
-      "src": "/health",
-      "dest": "backend/dist/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "frontend/$1"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
