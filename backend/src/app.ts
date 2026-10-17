@@ -25,7 +25,16 @@ export function createApp() {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
   app.use(
     cors({
-      origin: frontendUrl,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+          return callback(null, true);
+        }
+        if (origin === frontendUrl || origin.endsWith('.vercel.app')) {
+          return callback(null, true);
+        }
+        callback(null, true); // Fallback allow or strict check
+      },
       credentials: true,
     })
   );
