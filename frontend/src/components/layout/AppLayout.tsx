@@ -8,7 +8,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
     const eventSource = new EventSource(`${apiBaseUrl}/auth/events`, { withCredentials: true });
 
     eventSource.onmessage = (event) => {

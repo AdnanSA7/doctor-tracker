@@ -149,6 +149,7 @@ async function requireAuth(req, res, next) {
     try {
       decoded = import_jsonwebtoken.default.verify(token, JWT_SECRET);
     } catch (jwtErr) {
+      console.error("[JWT Verify Error]:", jwtErr);
       res.status(401).json({
         success: false,
         error: {
@@ -256,10 +257,15 @@ async function login(req, res) {
   });
 }
 async function logout(req, res) {
-  res.clearCookie("token");
+  const cookieOpts = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax"
+  };
+  res.clearCookie("token", cookieOpts);
+  res.clearCookie("connect.sid", cookieOpts);
   if (req.session) {
     req.session.destroy(() => {
-      res.clearCookie("connect.sid");
       res.json({ success: true, data: { message: "Logged out successfully" } });
     });
   } else {
@@ -1325,7 +1331,7 @@ function createApp() {
   const rawSessionSecret = process.env.SESSION_SECRET;
   if (process.env.NODE_ENV === "production") {
     if (!rawSessionSecret || rawSessionSecret.trim() === "") {
-      console.error("[FATAL CONFIG] SESSION_SECRET is not set in production. Sessions will be insecure. Set this in Vercel environment variables immediately.");
+      throw new Error("FATAL: SESSION_SECRET environment variable is required in production and cannot be empty.");
     }
   }
   const sessionSecret = rawSessionSecret && rawSessionSecret.trim() !== "" ? rawSessionSecret : "fallback-dev-secret-set-SESSION_SECRET-in-vercel";

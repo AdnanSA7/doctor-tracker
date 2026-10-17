@@ -41,9 +41,8 @@ export function usePermissions() {
   };
 
   const can = (action: string): boolean => {
-    // Fail closed while loading
-    if (loadingUser || loadingPerms) return false;
     if (isAdmin) return true;
+    if (loadingUser || loadingPerms) return false;
 
     switch (action) {
       case 'doctors.read':

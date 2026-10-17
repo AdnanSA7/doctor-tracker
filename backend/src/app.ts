@@ -63,10 +63,7 @@ export function createApp() {
   const rawSessionSecret = process.env.SESSION_SECRET;
   if (process.env.NODE_ENV === 'production') {
     if (!rawSessionSecret || rawSessionSecret.trim() === '') {
-      // Log a critical warning but don't throw — throwing crashes the entire serverless function
-      // and returns FUNCTION_INVOCATION_FAILED instead of a useful error.
-      // ACTION REQUIRED: Set SESSION_SECRET in your Vercel environment variables.
-      console.error('[FATAL CONFIG] SESSION_SECRET is not set in production. Sessions will be insecure. Set this in Vercel environment variables immediately.');
+      throw new Error('FATAL: SESSION_SECRET environment variable is required in production and cannot be empty.');
     }
   }
   const sessionSecret = rawSessionSecret && rawSessionSecret.trim() !== '' ? rawSessionSecret : 'fallback-dev-secret-set-SESSION_SECRET-in-vercel';

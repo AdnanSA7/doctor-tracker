@@ -41,6 +41,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     try {
       decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     } catch (jwtErr) {
+      console.error('[JWT Verify Error]:', jwtErr);
       res.status(401).json({
         success: false,
         error: {

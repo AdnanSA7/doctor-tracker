@@ -64,10 +64,16 @@ export async function login(req: Request, res: Response): Promise<void> {
 }
 
 export async function logout(req: Request, res: Response): Promise<void> {
-  res.clearCookie('token');
+  const cookieOpts = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: (process.env.NODE_ENV === 'production' ? 'strict' : 'lax') as 'strict' | 'lax',
+  };
+  res.clearCookie('token', cookieOpts);
+  res.clearCookie('connect.sid', cookieOpts);
+
   if (req.session) {
     req.session.destroy(() => {
-      res.clearCookie('connect.sid');
       res.json({ success: true, data: { message: 'Logged out successfully' } });
     });
   } else {
