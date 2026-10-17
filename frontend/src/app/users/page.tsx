@@ -110,26 +110,23 @@ export default function UsersPage() {
                       </td>
                       <td className="p-4 text-slate-600">{user.email}</td>
                       <td className="p-4">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold uppercase ${
-                          user.role === 'admin' ? 'bg-indigo-50 text-indigo-700' :
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold uppercase ${user.role === 'admin' ? 'bg-indigo-50 text-indigo-700' :
                           user.role === 'manager' ? 'bg-teal-50 text-teal-700' : 'bg-sky-50 text-sky-700'
-                        }`}>
+                          }`}>
                           {user.role}
                         </span>
                       </td>
                       <td className="p-4 text-center">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                          user.isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                        }`}>
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${user.isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+                          }`}>
                           {user.isActive ? 'Active' : 'Deactivated'}
                         </span>
                       </td>
                       <td className="p-4 text-right space-x-2">
                         <button
                           onClick={() => toggleActiveMutation.mutate({ id: user.id, isActive: !user.isActive })}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors inline-flex items-center space-x-1 ${
-                            user.isActive ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                          }`}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors inline-flex items-center space-x-1 ${user.isActive ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                            }`}
                         >
                           {user.isActive ? <UserX className="h-3.5 w-3.5" /> : <UserCheck className="h-3.5 w-3.5" />}
                           <span>{user.isActive ? 'Deactivate' : 'Activate'}</span>
@@ -159,7 +156,7 @@ export default function UsersPage() {
         </div>
       </div>
 
-      {/* Create User Modal */}
+      {/* Creating User Modal */}
       {isCreateOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-200">
