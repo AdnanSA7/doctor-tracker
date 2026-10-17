@@ -11,14 +11,23 @@ export function ensureMongoUri(uri: string): string {
 }
 
 export async function connectDB(uri?: string): Promise<void> {
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
+
   const rawUri = uri || process.env.MONGODB_URI || 'mongodb+srv://saiyedadnansa_db_user:G9jUsmC12re2Ii8b@cluster0.knracxb.mongodb.net/doctor-tracker';
   const mongoUri = ensureMongoUri(rawUri);
   try {
-    await mongoose.connect(mongoUri);
+    await mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 5000,
+    });
     console.log(`MongoDB connected successfully to ${mongoUri}`);
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    process.exit(1);
+    if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+      process.exit(1);
+    }
+    throw error;
   }
 }
 
