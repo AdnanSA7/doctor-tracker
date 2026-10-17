@@ -33,11 +33,14 @@ export function createApp() {
         if (origin === frontendUrl || origin.endsWith('.vercel.app')) {
           return callback(null, true);
         }
-        callback(null, true); // Fallback allow or strict check
+        callback(null, true);
       },
       credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     })
   );
+  app.options('*', cors());
 
   if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('dev'));

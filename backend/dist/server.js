@@ -1308,9 +1308,12 @@ function createApp() {
         }
         callback(null, true);
       },
-      credentials: true
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
     })
   );
+  app.options("*", (0, import_cors.default)());
   if (process.env.NODE_ENV !== "test") {
     app.use((0, import_morgan.default)("dev"));
   }
