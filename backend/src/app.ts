@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -98,6 +98,13 @@ export function createApp() {
         uptime: process.uptime(),
       },
     });
+  });
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.url.startsWith('/v1/') && !req.url.startsWith('/api/v1/')) {
+      req.url = `/api${req.url}`;
+    }
+    next();
   });
 
   app.use('/api/v1/auth', authRoutes);

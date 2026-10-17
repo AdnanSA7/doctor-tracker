@@ -1363,6 +1363,12 @@ function createApp() {
       }
     });
   });
+  app.use((req, res, next) => {
+    if (req.url.startsWith("/v1/") && !req.url.startsWith("/api/v1/")) {
+      req.url = `/api${req.url}`;
+    }
+    next();
+  });
   app.use("/api/v1/auth", auth_routes_default);
   app.use("/api/v1/doctors", doctors_routes_default);
   app.use("/api/v1/patients", patients_routes_default);
