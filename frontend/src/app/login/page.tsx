@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginInput } from '@doctor-tracker/shared';
-import { apiFetch } from '@/lib/api';
+import { apiFetch, setAuthToken } from '@/lib/api';
 import { Stethoscope, Lock, Mail, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -25,10 +25,13 @@ export default function LoginPage() {
     try {
       setError(null);
       setLoading(true);
-      await apiFetch('/auth/login', {
+      const res: any = await apiFetch('/auth/login', {
         method: 'POST',
         body: JSON.stringify(data),
       });
+      if (res && res.token) {
+        setAuthToken(res.token);
+      }
       window.dispatchEvent(new Event('auth-login'));
       router.push('/');
     } catch (err: any) {

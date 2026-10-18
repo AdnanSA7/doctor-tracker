@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { usePermissions } from '@/hooks/usePermissions';
 import { LayoutDashboard, Stethoscope, Users, LogOut, X, Shield, KeyRound } from 'lucide-react';
-import { apiFetch } from '@/lib/api';
+import { apiFetch, setAuthToken } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
@@ -23,10 +23,12 @@ export function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
   const handleLogout = async () => {
     try {
       await apiFetch('/auth/logout', { method: 'POST' });
+      setAuthToken(null);
       window.dispatchEvent(new Event('auth-login'));
       router.push('/login');
     } catch (err) {
       console.error('Logout failed', err);
+      setAuthToken(null);
       window.dispatchEvent(new Event('auth-login'));
       router.push('/login');
     }

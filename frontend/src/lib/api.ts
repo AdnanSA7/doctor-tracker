@@ -1,5 +1,26 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
+let memoryToken: string | null = null;
+
+export function setAuthToken(token: string | null) {
+  memoryToken = token;
+  if (typeof window !== 'undefined') {
+    if (token) {
+      sessionStorage.setItem('dt_token', token);
+    } else {
+      sessionStorage.removeItem('dt_token');
+    }
+  }
+}
+
+export function getAuthToken(): string | null {
+  if (memoryToken) return memoryToken;
+  if (typeof window !== 'undefined') {
+    return sessionStorage.getItem('dt_token');
+  }
+  return null;
+}
+
 interface FetchOptions extends RequestInit {
   params?: Record<string, string | number | undefined>;
 }
@@ -21,16 +42,24 @@ export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}):
     }
   }
 
+  const token = getAuthToken();
+  const authHeaders: Record<string, string> = {};
+  if (token) {
+    authHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(url, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders,
       ...init.headers,
     },
     credentials: 'include',
   });
 
   if (res.status === 401) {
+    setAuthToken(null);
     if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
       window.dispatchEvent(new Event('auth-unauthorized'));
     }
@@ -67,16 +96,24 @@ export async function apiFetchWithMeta<T>(endpoint: string, options: FetchOption
     }
   }
 
+  const token = getAuthToken();
+  const authHeaders: Record<string, string> = {};
+  if (token) {
+    authHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(url, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders,
       ...init.headers,
     },
     credentials: 'include',
   });
 
   if (res.status === 401) {
+    setAuthToken(null);
     if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
       window.dispatchEvent(new Event('auth-unauthorized'));
     }
